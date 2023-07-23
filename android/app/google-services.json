@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "642189209932",
+    "project_id": "hoteltetetechapp",
+    "storage_bucket": "hoteltetetechapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642189209932:android:9571915607cdf422059fe9",
+        "android_client_info": {
+          "package_name": "com.pruebas.hotel_tetetech_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "642189209932-ki5vhm6oim2099lm44fkd5shl7nb25r7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdmv-KssQiXp1Qa4UoObwtWiv3iXO-1kA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "642189209932-ki5vhm6oim2099lm44fkd5shl7nb25r7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
