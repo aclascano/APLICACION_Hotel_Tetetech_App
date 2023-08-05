@@ -14,6 +14,14 @@ class HotelManager {
     if (!isValidCalificacion(hotel.calificacion)) {
       throw Exception('La calificación debe estar entre 1 y 5.');
     }
+
+    // Verificar si ya existe un hotel con el mismo nombre
+    List<Hotel> hotelesExistentes = await _hotelService.getHotels();
+    bool nombreRepetido =
+        hotelesExistentes.any((h) => h.nombre == hotel.nombre);
+    if (nombreRepetido) {
+      throw Exception('Ya existe un hotel con el mismo nombre.');
+    }
     await _hotelService.addHotel(hotel);
   }
 
@@ -33,7 +41,7 @@ class HotelManager {
           'calificacion': hotel.calificacion,
           'ubicacion': hotel.ubicacion,
           'disponibilidad': habitacionDisponible,
-          'precio': hotel.precioBase,
+          'precio': hotel.precioBase?.toDouble(),
         };
       }).toList();
     } catch (e) {
@@ -53,25 +61,37 @@ class HotelManager {
     }
   }
 
-  //Filtrar por Ubicación
-  List<Hotel> filtrarPorUbicacion(List<Hotel> hoteles, String ubicacion) {
+  List<Hotel> filtrarPorUbicacion(
+      List<Map<String, dynamic>> hotelesMap, String ubicacion) {
+    // Convertir la lista de mapas a una lista de hoteles
+    List<Hotel> hoteles =
+        hotelesMap.map((hotelMap) => Hotel.fromJson(hotelMap)).toList();
+
     return hoteles.where((hotel) => hotel.ubicacion == ubicacion).toList();
   }
 
-  //Filtrar por precio
+  List<Hotel> filtrarPorPrecio(List<Map<String, dynamic>> hotelesMap,
+      double minPrecio, double maxPrecio) {
+    // Convertir la lista de mapas a una lista de hoteles
+    List<Hotel> hoteles =
+        hotelesMap.map((hotelMap) => Hotel.fromJson(hotelMap)).toList();
 
-  List<Hotel> filtrarPorPrecio(
-      List<Hotel> hoteles, double minPrecio, double maxPrecio) {
     return hoteles
         .where((hotel) =>
-            hotel.precioBase! >= minPrecio && hotel.precioBase! <= maxPrecio)
+            hotel.precioBase != null &&
+            hotel.precioBase! >= minPrecio &&
+            hotel.precioBase! <= maxPrecio)
         .toList();
   }
 
 // Filtrar por disponibilidad
 
   List<Hotel> filtrarPorDisponibilidad(
-      List<Hotel> hoteles, int cantidadHabitaciones) {
+      List<Map<String, dynamic>> hotelesMap, int cantidadHabitaciones) {
+    // Convertir la lista de mapas a una lista de hoteles
+    List<Hotel> hoteles =
+        hotelesMap.map((hotelMap) => Hotel.fromJson(hotelMap)).toList();
+
     return hoteles.where((hotel) {
       int habitacionDisponible =
           (hotel.disponibilidad?.habitacionesFamiliares ?? 0) +

@@ -25,18 +25,21 @@ class Hotel {
   });
 
   factory Hotel.fromJson(Map<String, dynamic> json) {
-    return Hotel(
-      nombre: json['nombre'],
-      ubicacion: json['ubicacion'],
-      calificacion: json['calificacion'],
-      precioBase: json['precioBase'],
-      descripcion: json['descripcion'],
-      servicios: List<String>.from(json['servicios']),
-      disponibilidad: Disponibilidad.fromJson(json['disponibilidad']),
-      contacto: Contacto.fromJson(json['contacto']),
-      fotografia: json['fotografia']
-    );
-  }
+  return Hotel(
+    nombre: json['nombre'],
+    ubicacion: json['ubicacion'],
+    calificacion: json['calificacion'],
+    precioBase: json['precioBase'],
+    descripcion: json['descripcion'],
+    servicios: json['servicios'] != null ? List<String>.from(json['servicios']) : null,
+    disponibilidad: json['disponibilidad'] is Map<String, dynamic> ? Disponibilidad.fromJson(json['disponibilidad']) : null,
+    contacto: json['contacto'] is Map<String, dynamic> ? Contacto.fromJson(json['contacto']) : null,
+    fotografia: json['fotografia']
+  );
+}
+
+
+
 
   Map<String, dynamic> toJson() {
     return {
