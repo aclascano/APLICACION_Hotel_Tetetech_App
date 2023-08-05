@@ -24,7 +24,6 @@ class AgregarHotelScreen extends StatelessWidget {
     return Theme(data: appTheme, 
     child: Navigator(
       pages: [
-        // Agregar todas las páginas del proceso en el orden que desees mostrarlas
         MaterialPage(child: FotografiaForm(info:info,disponibilidad: disponibilidad,contacto: contacto, fotografia: fotografia, agregarHotelScreen: this)),
         MaterialPage(child: ContactoForm(info:info,disponibilidad: disponibilidad,contacto: contacto, fotografia: fotografia, agregarHotelScreen: this)),
         MaterialPage(child: DisponibilidadForm(info:info,disponibilidad: disponibilidad,contacto: contacto , fotografia: fotografia, agregarHotelScreen: this)),

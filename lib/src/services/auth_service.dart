@@ -1,74 +1,79 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user.dart';
+
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Método para registrar un nuevo usuario con email y contraseña
-  Future<Usuario?> registerWithEmailAndPassword(String email, String password) async {
+  Future<void> registerUser(String email, String password, String nombre) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential authResult = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      User? user = userCredential.user;
-      if (user != null) {
-        return Usuario(
-          id: user.uid,
-          nombre: '', // Puedes agregar aquí el nombre del usuario si lo deseas
-          correo: user.email,
-        );
-      } else {
-        return null;
-      }
+      Usuario nuevoUsuario = Usuario(
+        id: authResult.user!.uid,
+        nombre: nombre,
+        correo: email,
+        rol: 'cliente', // Rol por defecto
+      );
+      await _firestore
+          .collection('usuarios')
+          .doc(authResult.user!.uid)
+          .set(nuevoUsuario.toJson());
     } catch (e) {
-      print('Error en el registro de usuario: $e');
-      return null;
+      print('Error en el registro: $e');
+      throw e;
     }
   }
 
-  // Método para iniciar sesión con email y contraseña
-  Future<Usuario?> signInWithEmailAndPassword(String email, String password) async {
+  Future<bool> validarRolUsuario(String userId, String rolValido) async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      DocumentSnapshot userDoc = await _firestore.collection('usuarios').doc(userId).get();
+      Usuario usuario = Usuario.fromJson(userDoc.data() as Map<String, dynamic>);
+      
+      return usuario.rol == rolValido;
+    } catch (e) {
+      print('Error al validar el rol del usuario: $e');
+      return false;
+    }
+  }
+
+  Future<bool> isEmailRegistered(String email) async {
+    try {
+      final result = await _auth.fetchSignInMethodsForEmail(email);
+      return result.isNotEmpty;
+    } catch (e) {
+      print('Error while checking email registration: $e');
+      return false;
+    }
+  }
+
+  Future<Usuario?> loginUser(String email, String password) async {
+    try {
+      UserCredential authResult = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      User? user = userCredential.user;
-      if (user != null) {
-        // Aquí podrías obtener más detalles del usuario si es necesario
-        return Usuario(
-          id: user.uid,
-          nombre: user.displayName,
-          correo: user.email,
-        );
-      } else {
-        return null;
-      }
+      DocumentSnapshot userDoc =
+          await _firestore.collection('usuarios').doc(authResult.user!.uid).get();
+      Usuario usuario = Usuario.fromJson(userDoc.data() as Map<String, dynamic>);
+
+      return usuario;
     } catch (e) {
       print('Error en el inicio de sesión: $e');
       return null;
     }
   }
-
-  // Método para cerrar sesión
-  Future<void> signOut() async {
-    await _auth.signOut();
+  Future<User?> getCurrentUser() async {
+    return _auth.currentUser;
   }
 
-  // Método para obtener el usuario actualmente autenticado (si lo hay)
-  Usuario? getCurrentUser() {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      return Usuario(
-        id: user.uid,
-        nombre: user.displayName,
-        correo: user.email,
-      );
-    } else {
-      return null;
-    }
+  Future<void> logoutUser() async {
+    await _auth.signOut();
   }
 }
