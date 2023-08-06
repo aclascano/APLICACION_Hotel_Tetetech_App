@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../services/auth_service.dart';
 import 'añadir_hotel.dart';
 import 'mostrar_hotel.dart';
 
@@ -10,7 +11,7 @@ class HotelCrudScreen extends StatefulWidget{
 }
 
 class _HotelCrudScreenState extends State<HotelCrudScreen>{
-  
+  final AuthService _authService = AuthService();
   int _selectedIndex = 0;
 
   static const TextStyle optionStyle =
@@ -33,6 +34,59 @@ class _HotelCrudScreenState extends State<HotelCrudScreen>{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: FutureBuilder(
+                future: _authService.getCurrentUser(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else {
+                    if (snapshot.hasData) {
+                      var user = snapshot.data;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Bienvenido,',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            user!.displayName ?? 'Usuario',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Text('Usuario no encontrado');
+                    }
+                  }
+                },
+              ),
+            ),
+            ListTile(
+              title: Text('Cerrar Sesión'),
+              onTap: () async {
+                await _authService.logoutUser();
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+            ),
+          ],
+        ),
       ),
       body: Center(child: _screens[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(

@@ -38,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen>{
           children: [
             TextField(
               controller: emailController,
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: 'Correo Electrónico',
                 prefixIcon: Icon(Icons.email),

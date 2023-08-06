@@ -10,10 +10,6 @@ import '../widgets/info_form.dart';
 
 class AgregarHotelScreen extends StatelessWidget {
 
-   void printHotelInfo() {
-  
-} 
-
   final Hotelinfo info = Hotelinfo();
   final HotelDisponibilidad disponibilidad = HotelDisponibilidad();
   final HotelContacto contacto = HotelContacto();

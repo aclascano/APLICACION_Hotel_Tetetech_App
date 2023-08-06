@@ -1,5 +1,3 @@
-import 'package:hotel_tetetech_app/src/models/contacto.dart';
-import 'package:hotel_tetetech_app/src/models/disponibilidad.dart';
 import 'package:hotel_tetetech_app/src/models/hotel.dart';
 import 'package:hotel_tetetech_app/src/services/hotel_service.dart';
 
@@ -36,7 +34,7 @@ class HotelManager {
                 (hotel.disponibilidad?.habitacionesMatrimoniales ?? 0);
 
         return {
-          'foto': hotel.fotografia,
+          'fotografia': hotel.fotografia,
           'nombre': hotel.nombre,
           'calificacion': hotel.calificacion,
           'ubicacion': hotel.ubicacion,
@@ -52,18 +50,19 @@ class HotelManager {
 
   //Para ver un hotel con atributos detallados.
 
-  Future<Hotel?> getHotelDetail(String hotelId) async {
-    try {
-      return await _hotelService.getHotelById(hotelId);
-    } catch (e) {
-      print('Error al obtener el detalle del hotel: $e');
-      return null;
-    }
+ Future<Hotel?> getHotelDetailByIndex(int index) async {
+  List<Hotel> hotelesList = await _hotelService.getHotels();
+  
+  if (index >= 0 && index < hotelesList.length) {
+    return hotelesList[index];
+  } else {
+    return null;
   }
+}
 
   List<Hotel> filtrarPorUbicacion(
       List<Map<String, dynamic>> hotelesMap, String ubicacion) {
-    // Convertir la lista de mapas a una lista de hoteles
+
     List<Hotel> hoteles =
         hotelesMap.map((hotelMap) => Hotel.fromJson(hotelMap)).toList();
 
@@ -72,7 +71,7 @@ class HotelManager {
 
   List<Hotel> filtrarPorPrecio(List<Map<String, dynamic>> hotelesMap,
       double minPrecio, double maxPrecio) {
-    // Convertir la lista de mapas a una lista de hoteles
+
     List<Hotel> hoteles =
         hotelesMap.map((hotelMap) => Hotel.fromJson(hotelMap)).toList();
 
@@ -88,7 +87,7 @@ class HotelManager {
 
   List<Hotel> filtrarPorDisponibilidad(
       List<Map<String, dynamic>> hotelesMap, int cantidadHabitaciones) {
-    // Convertir la lista de mapas a una lista de hoteles
+
     List<Hotel> hoteles =
         hotelesMap.map((hotelMap) => Hotel.fromJson(hotelMap)).toList();
 

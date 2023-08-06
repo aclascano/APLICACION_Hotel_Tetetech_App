@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import '../widgets/lista_hoteles.dart';
 
 class HotelesScreen extends StatefulWidget {
   @override
@@ -13,7 +14,21 @@ class _HotelesScreenState extends State<HotelesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hoteles'),
+        title: Text(
+          'Lista de Hoteles',
+          style: TextStyle(
+            fontFamily: 'Montserrat', 
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white, 
+        elevation: 0, // Sin sombra
+        iconTheme: IconThemeData(
+          color: Colors.black, 
+        ),
       ),
       drawer: Drawer(
         child: ListView(
@@ -21,7 +36,7 @@ class _HotelesScreenState extends State<HotelesScreen> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Color.fromARGB(255, 209, 183, 154),
               ),
               child: FutureBuilder(
                 future: _authService.getCurrentUser(),
@@ -68,10 +83,7 @@ class _HotelesScreenState extends State<HotelesScreen> {
           ],
         ),
       ),
-      body: Center(
-        // Aquí iría el contenido de la pantalla de hoteles
-        child: Text('Contenido de la pantalla de Hoteles'),
-      ),
+      body: HotelesList(),
     );
   }
 }

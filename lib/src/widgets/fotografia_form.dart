@@ -1,10 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import '../bloc/hotel_bloc.dart';
 import '../data/hotelcontacto_data.dart';
 import '../data/hoteldisponibilidad_data.dart';
 import '../data/hotelfotografia_data.dart';
 import '../data/hotelinfo_data.dart';
+import '../models/contacto.dart';
+import '../models/disponibilidad.dart';
+import '../models/hotel.dart';
 import '../screens/añadir_hotel.dart';
 import '../services/imagenes_service.dart';
 
@@ -15,12 +19,15 @@ class FotografiaForm extends StatefulWidget {
   final HotelContacto contacto;
   final AgregarHotelScreen agregarHotelScreen;
 
+  final HotelManager hotelManager = HotelManager();
+
   FotografiaForm(
       {required this.info,
       required this.disponibilidad,
       required this.contacto,
       required this.fotografia,
-      required this.agregarHotelScreen});
+      required this.agregarHotelScreen,
+      });
 
   @override
   _FotografiaFormState createState() => _FotografiaFormState();
@@ -73,7 +80,6 @@ class _FotografiaFormState extends State<FotografiaForm> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-
             Text('Paso 4. Sube la foto del hotel'),
             SizedBox(height: 16),
             if (_selectedImage != null)
@@ -110,14 +116,14 @@ class _FotografiaFormState extends State<FotografiaForm> {
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Color.fromARGB(255, 240, 193,
-                        51), // Cambia el color de fondo del botón
+                        51),
                     onPrimary:
-                        Colors.black, // Cambia el color del texto del botón
+                        Colors.black, 
                     padding:
                         EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
-                          10.0), // Cambia el radio de borde del botón
+                          10.0),
                     ),
                   ),
                   child: Text('Retroceder'),
@@ -126,7 +132,8 @@ class _FotografiaFormState extends State<FotografiaForm> {
                   onPressed: () {
                     print('Nombre del hotel: ${widget.info.nombre}');
                     print('Ubicación del hotel: ${widget.info.ubicacion}');
-                    print('Calificación del hotel: ${widget.info.calificacion}');
+                    print(
+                        'Calificación del hotel: ${widget.info.calificacion}');
                     print('Precio Base: ${widget.info.precioBase}');
                     print('Descripcion: ${widget.info.descripcion}');
                     print('Servicios ${widget.info.servicios}');
@@ -136,22 +143,22 @@ class _FotografiaFormState extends State<FotografiaForm> {
                         'Habitacion F: ${widget.disponibilidad.habitacionesFamiliares}');
                     print(
                         'Habitacion G: ${widget.disponibilidad.habitacionesGrupales}');
-                    print('Precio M: ${widget.disponibilidad.precioMatrimonial}');
+                    print(
+                        'Precio M: ${widget.disponibilidad.precioMatrimonial}');
                     print('Precio F: ${widget.disponibilidad.precioFamiliar}');
-                    print('Precio G: ${widget.disponibilidad.habitacionesGrupales}');
+                    print(
+                        'Precio G: ${widget.disponibilidad.habitacionesGrupales}');
                     print('Fotografia: ${widget.fotografia.fotografia}');
+                    agregarNuevoHotel();
                   },
                   child: Text('Guardar Nuevo Hotel'),
                   style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 119, 217,
-                        43), // Cambia el color de fondo del botón
-                    onPrimary:
-                        Colors.black, // Cambia el color del texto del botón
+                    primary: Color.fromARGB(255, 119, 217, 43),
+                    onPrimary: Colors.black,
                     padding:
                         EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          10.0), // Cambia el radio de borde del botón
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
                 ),
@@ -161,5 +168,53 @@ class _FotografiaFormState extends State<FotografiaForm> {
         ),
       ),
     );
+  }
+
+  void agregarNuevoHotel() async {
+    final Hotel nuevoHotel = Hotel(
+      nombre: widget.info.nombre,
+      ubicacion: widget.info.ubicacion,
+      calificacion: widget.info.calificacion,
+      precioBase: widget.info.precioBase,
+      descripcion: widget.info.descripcion,
+      servicios: widget.info.servicios,
+      disponibilidad: Disponibilidad(
+        habitacionesFamiliares: widget.disponibilidad.habitacionesFamiliares,
+        habitacionesGrupales: widget.disponibilidad.habitacionesMatrimoniales,
+        habitacionesMatrimoniales: widget.disponibilidad.habitacionesGrupales,
+        precioMatrimonial: widget.disponibilidad.precioMatrimonial,
+        precioFamiliar: widget.disponibilidad.precioFamiliar,
+        precioGrupal: widget.disponibilidad.precioGrupal,
+      ),
+      contacto: Contacto(
+        correo: widget.contacto.correo,
+        numeroTelefono: widget.contacto.numeroTelefono,
+        facebook: widget.contacto.facebook,
+        instagram: widget.contacto.instagram,
+        sitioWeb: widget.contacto.sitioWeb,
+      ),
+      fotografia: widget.fotografia.fotografia,
+    );
+
+    try {
+      widget.hotelManager.addHotel(nuevoHotel);
+      Navigator.pushNamed(context, '/hoteles_crud');
+
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error al agregar el hotel'),
+          content: Text(
+              'Ha ocurrido un error al agregar el hotel. Por favor, inténtalo nuevamente.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cerrar'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

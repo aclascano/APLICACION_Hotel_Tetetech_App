@@ -137,7 +137,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   }
 
                   await AuthService().registerUser(email, password, nombre);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                            'Usuario agregado exitosamente-Inicie Sesion')),
+                  );
                   Navigator.pushNamed(context, '/login');
+                  
 
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
