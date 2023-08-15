@@ -7,8 +7,8 @@ class Hotel {
   int? calificacion;
   double?precioBase;
   String? descripcion;
-  List<String>? servicios; // Lista de servicios disponibles
-  Disponibilidad? disponibilidad; // Objeto de la clase Disponibilidad
+  List<String>? servicios;
+  Disponibilidad? disponibilidad; 
   Contacto? contacto;
   String? fotografia;
 

@@ -51,12 +51,28 @@ class HotelService {
     }
   }
 
-  // Método para eliminar un hotel
-  Future<void> deleteHotel(String id) async {
-    try {
+  Future<void> deleteHotelByIndex(int index) async {
+  try {
+    List<String> hotelIds = await _getHotelIds(); // Obtener lista de IDs de hoteles
+    if (index >= 0 && index < hotelIds.length) {
+      String id = hotelIds[index];
       await hotelsCollection.doc(id).delete();
-    } catch (e) {
-      print('Error al eliminar el hotel: $e');
+    } else {
+      print('Índice fuera de rango');
     }
+  } catch (e) {
+    print('Error al eliminar el hotel: $e');
   }
+}
+
+Future<List<String>> _getHotelIds() async {
+  try {
+    QuerySnapshot snapshot = await hotelsCollection.get();
+    List<String> hotelIds = snapshot.docs.map((doc) => doc.id).toList();
+    return hotelIds;
+  } catch (e) {
+    print('Error al obtener IDs de hoteles: $e');
+    return [];
+  }
+}
 }
