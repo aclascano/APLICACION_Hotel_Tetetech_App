@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import '../bloc/hotel_bloc.dart';
 import 'detalle_hoteles.dart';
 
-class HotelesList extends StatelessWidget {
+class HotelesList extends StatefulWidget {
+  @override
+  _HotelesListState createState() => _HotelesListState();
+}
+
+class _HotelesListState extends State<HotelesList> {
   final HotelManager hotelManager = HotelManager();
 
   @override
@@ -83,7 +88,7 @@ class HotelesList extends StatelessWidget {
                                 ),
                                 SizedBox(height: 4),
                                 Text(
-                                  'Precio: ${hotel['precio']}',
+                                  'Precio: ${hotel['precioBase']}',
                                   style: TextStyle(
                                     fontSize: 14,
                                   ),
@@ -107,9 +112,9 @@ class HotelesList extends StatelessWidget {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 HotelDetailScreen(
-                                                    hotelId: index,),
+                                              hotelId: index,
+                                            ),
                                           ),
-                                          
                                         );
                                         print(index.toString());
                                       },

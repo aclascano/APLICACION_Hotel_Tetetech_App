@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
-import '../widgets/lista_hoteles.dart';
+
 
 class HotelesScreen extends StatefulWidget {
   @override
   _HotelesScreenState createState() => _HotelesScreenState();
 }
-
 class _HotelesScreenState extends State<HotelesScreen> {
   final AuthService _authService = AuthService();
+
+  String _filtroSeleccionado = 'Todo'; 
 
   @override
   Widget build(BuildContext context) {
@@ -74,16 +75,21 @@ class _HotelesScreenState extends State<HotelesScreen> {
               ),
             ),
             ListTile(
-              title: Text('Cerrar Sesión'),
+              
+              title: Text('Lista de Hoteles'),
               onTap: () async {
-                await _authService.logoutUser();
-                Navigator.pushReplacementNamed(context, '/login');
+                
               },
+              
             ),
           ],
         ),
       ),
-      body: HotelesList(),
+      body: Column(
+        
+      ),
     );
   }
+ 
+
 }

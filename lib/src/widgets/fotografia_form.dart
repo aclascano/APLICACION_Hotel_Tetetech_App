@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:hotel_tetetech_app/src/services/hotel_service.dart';
 import 'package:image_picker/image_picker.dart';
 import '../bloc/hotel_bloc.dart';
 import '../data/hotelcontacto_data.dart';
@@ -9,6 +10,7 @@ import '../data/hotelinfo_data.dart';
 import '../models/contacto.dart';
 import '../models/disponibilidad.dart';
 import '../models/hotel.dart';
+import '../routes.dart';
 import '../screens/añadir_hotel.dart';
 import '../services/imagenes_service.dart';
 
@@ -34,6 +36,7 @@ class FotografiaForm extends StatefulWidget {
 }
 
 class _FotografiaFormState extends State<FotografiaForm> {
+  final HotelService _hotelService = HotelService();
   final TextEditingController urlFotografiaController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
   late ImageUploadService _imageUploadService;
@@ -197,24 +200,48 @@ class _FotografiaFormState extends State<FotografiaForm> {
     );
 
     try {
-      widget.hotelManager.addHotel(nuevoHotel);
-      Navigator.pushNamed(context, '/hoteles_crud');
+  List<Hotel> hotelesExistentes = await _hotelService.getHotels();
+  bool nombreRepetido = hotelesExistentes.any((h) => h.nombre == nuevoHotel.nombre);
+  if (nombreRepetido) {
+    throw Exception('Ya existe un hotel con el mismo nombre.');
+  }
+  await widget.hotelManager.addHotel(nuevoHotel);
 
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error al agregar el hotel'),
-          content: Text(
-              'Ha ocurrido un error al agregar el hotel. Por favor, inténtalo nuevamente.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cerrar'),
-            ),
-          ],
+  // Mostrar un diálogo de éxito
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Hotel Agregado'),
+      content: Text('El hotel se ha agregado exitosamente.'),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context); // Cerrar el diálogo
+  
+          },
+          child: Text('Aceptar'),
         ),
-      );
-    }
+      ],
+    ),
+  );
+} catch (e) {
+  // Mostrar un diálogo de error con la excepción
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Error al agregar el hotel'),
+      content: Text(
+        'Ha ocurrido un error al agregar el hotel. Por favor, inténtalo nuevamente.\nError: $e',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('Cerrar'),
+        ),
+      ],
+    ),
+  );
+}
+
   }
 }

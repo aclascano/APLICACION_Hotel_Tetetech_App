@@ -13,7 +13,7 @@ class HotelManager {
       throw Exception('La calificación debe estar entre 1 y 5.');
     }
 
-    // Verificar si ya existe un hotel con el mismo nombre
+    
     List<Hotel> hotelesExistentes = await _hotelService.getHotels();
     bool nombreRepetido =
         hotelesExistentes.any((h) => h.nombre == hotel.nombre);
@@ -39,7 +39,7 @@ class HotelManager {
           'calificacion': hotel.calificacion,
           'ubicacion': hotel.ubicacion,
           'disponibilidad': habitacionDisponible,
-          'precio': hotel.precioBase?.toDouble(),
+          'precioBase': hotel.precioBase?.toDouble(),
         };
       }).toList();
     } catch (e) {
@@ -65,23 +65,32 @@ class HotelManager {
 
     List<Hotel> hoteles =
         hotelesMap.map((hotelMap) => Hotel.fromJson(hotelMap)).toList();
+        
 
     return hoteles.where((hotel) => hotel.ubicacion == ubicacion).toList();
   }
 
   List<Hotel> filtrarPorPrecio(List<Map<String, dynamic>> hotelesMap,
-      double minPrecio, double maxPrecio) {
+    double minPrecio, double maxPrecio) {
 
-    List<Hotel> hoteles =
-        hotelesMap.map((hotelMap) => Hotel.fromJson(hotelMap)).toList();
+  List<Hotel> hoteles = [];
+  
+  for (var hotelMap in hotelesMap) {
+    Hotel? hotel = Hotel.fromJson(hotelMap);
 
-    return hoteles
-        .where((hotel) =>
-            hotel.precioBase != null &&
-            hotel.precioBase! >= minPrecio &&
-            hotel.precioBase! <= maxPrecio)
-        .toList();
+    print('xddd');
+    print(maxPrecio);
+    print(hotel.precioBase);
+    if (hotel != null && hotel.precioBase != null &&
+        hotel.precioBase! >= minPrecio && hotel.precioBase! <= maxPrecio) {
+      hoteles.add(hotel);
+    }
+    
   }
+
+  return hoteles;
+}
+
 
 // Filtrar por disponibilidad
 

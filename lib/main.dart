@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: AppRoutes.login, // Ruta inicial
+      initialRoute: AppRoutes.login,
       routes: AppRoutes.getRoutes(),
      
     );

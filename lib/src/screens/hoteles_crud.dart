@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
 import 'añadir_hotel.dart';
-import 'mostrar_hotel.dart';
+import 'mostrar_hotel_admin.dart';
 
 class HotelCrudScreen extends StatefulWidget{
   @override
@@ -99,7 +99,6 @@ class _HotelCrudScreenState extends State<HotelCrudScreen>{
             icon: Icon(Icons.add),
             label: 'Agregar Hotel',
           ),
-          
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

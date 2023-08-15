@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_tetetech_app/src/bloc/hotel_bloc.dart';
+import 'package:hotel_tetetech_app/src/services/hotel_service.dart';
 
 class HotelListView extends StatefulWidget {
   @override
@@ -8,31 +9,12 @@ class HotelListView extends StatefulWidget {
 
 class _HotelListViewState extends State<HotelListView> {
   final HotelManager hotelManager = HotelManager();
-  final List<String> filtros = ['Ubicación', 'Calificación', 'Precio'];
-  String filtroSeleccionado = 'Ubicación';
+  final HotelService hotelService = HotelService();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-      
-        DropdownButton<String>(
-          value: filtroSeleccionado,
-          items: filtros.map((filtro) {
-            return DropdownMenuItem<String>(
-              value: filtro,
-              child: Text(filtro),
-            );
-          }).toList(),
-          onChanged: (newValue) {
-            setState(() {
-              filtroSeleccionado = newValue!;
-              // Llama a un método para actualizar la lista de hoteles con el filtro seleccionado
-              // Por ejemplo, si el filtro seleccionado es 'Ubicación', llamarías a:
-              // actualizarHotelesPorUbicacion();
-            });
-          },
-        ),
         Expanded(
           child: FutureBuilder<List<Map<String, dynamic>>>(
             future: hotelManager.getHotelGeneral(),
@@ -56,13 +38,28 @@ class _HotelListViewState extends State<HotelListView> {
                   itemBuilder: (context, index) {
                     final hotel = hoteles[index];
                     return Card(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 25),
                       child: ListTile(
                         title: Text(hotel['nombre']),
-                        subtitle: Text(
+                        subtitle: 
+                        Row(children: [
+                          Text(
                             'Calificación: ${hotel['calificacion']}\nUbicación: ${hotel['ubicacion']}'),
-                        trailing: Text('Precio: ${hotel['precio']}'),
+                          Text('Precio: ${hotel['precioBase']}'),
+                          SizedBox(
+                              width: 50), // Espacio entre el texto y el botón
+                          ElevatedButton(
+                            onPressed: () {
+                              hotelService.deleteHotelByIndex(index);
+                              setState(() {});
+                            },
+                            child: Text('Eliminar'),
+                          ),
+                          
+                        ]),
+                        
+                        
                       ),
                     );
                   },
