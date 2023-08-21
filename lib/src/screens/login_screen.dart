@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import '../models/user.dart';
 import '../services/auth_service.dart';
@@ -17,37 +18,145 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        /*
-        appBar: AppBar(
-          title: Text(
-            'Inicio de Sesión',
-            style: TextStyle(
-              fontFamily: 'Montserrat', // Cambia la fuente
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-            ),
-          ),
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          elevation: 0, // Sin sombra
-        ),
-        */
         body: Stack(
       children: [
-        // Centra la imagen en el Stack
+        Image.asset(
+          'assets/images/AnyConv.com__Travel.png',
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: 600,
+        ),
         Align(
-          alignment: Alignment.topCenter,
-          child: Transform.scale(
-            scale: 0.9,
-            child: Image.asset(
-              'assets/images/icono_login.png',
-              height: 470,
-              width: 300,
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            height: 380.0, // Altura deseada del contenedor
+            margin: EdgeInsets.all(
+                0), // Margen interno para el espacio blanco alrededor del contenido
+            padding:
+                EdgeInsets.all(0), // Ajusta el padding según lo que necesites
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  'Inicio de Sesión',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontFamily: 'Montserrat', // Cambia la fuente
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: 'Correo Electrónico',
+                    prefixIcon: Icon(Icons.email),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20, width: 20),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Contraseña',
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                      child: Icon(
+                        _obscurePassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () async {
+                    String email = emailController.text;
+                    String password = passwordController.text;
+
+                    if (email.isEmpty || password.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Ningún campo puede estar vacío')),
+                      );
+                    } else if (!isValidEmail(email)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content:
+                                Text('El correo electrónico no es valido')),
+                      );
+                    } else {
+                      Usuario? usuario =
+                          await AuthService().loginUser(email, password);
+
+                      if (usuario != null) {
+                        if (usuario.rol == 'admin') {
+                          Navigator.pushNamed(context, '/hoteles_crud');
+                        } else {
+                          Navigator.pushNamed(context, '/hoteles_index');
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Hubo un error al iniciar sesión')),
+                        );
+                      }
+                    }
+                  },
+                  child: Text('Iniciar Sesión'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.brown,
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                    textStyle: TextStyle(
+                      fontFamily: 'Montserrat', // Cambia la fuente
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    // Navegar a la pantalla de registro
+                    Navigator.pushNamed(context, '/registro');
+                  },
+                  child: Text(
+                    '¿No estás registrado? Regístrate',
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        // Coloca el contenido encima de la imagen de fondo
 
+        // Coloca el contenido encima de la imagen de fondo
+/*
         Padding(
           padding: const EdgeInsets.only(top: 380.0),
           child: Container(
@@ -179,6 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
+        */
       ],
     ));
   }
