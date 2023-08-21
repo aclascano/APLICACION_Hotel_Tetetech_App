@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_tetetech_app/src/widgets/lista_hoteles_precio.dart';
 import '../services/auth_service.dart';
+import '../widgets/lista_hoteles.dart';
+import '../widgets/lista_hoteles_ubicacion.dart';
 
 
 class HotelesScreen extends StatefulWidget {
@@ -75,21 +78,54 @@ class _HotelesScreenState extends State<HotelesScreen> {
               ),
             ),
             ListTile(
-              
-              title: Text('Lista de Hoteles'),
+              title: Text('Cerrar Sesión'),
               onTap: () async {
-                
+                await _authService.logoutUser();
+                Navigator.pushReplacementNamed(context, '/login');
               },
-              
             ),
           ],
         ),
       ),
       body: Column(
-        
+        children: [
+          SizedBox(height: 12),
+          DropdownButton<String>(
+            value: _filtroSeleccionado,
+            items: ['Todo', 'Ubicación', 'Precio']
+                .map((filtro) {
+                  return DropdownMenuItem<String>(
+                    value: filtro,
+                    child: Text(filtro),
+                  );
+                })
+                .toList(),
+            onChanged: (newValue) {
+              setState(() {
+                _filtroSeleccionado = newValue!;
+              });
+            },
+          ),
+          Expanded(
+            child: _buildSelectedWidget(),
+          ),
+        ],
       ),
     );
   }
- 
+
+  Widget _buildSelectedWidget() {
+    if (_filtroSeleccionado == 'Todo') {
+      return HotelesList();
+    } else if (_filtroSeleccionado == 'Ubicación') {
+      return HotelesListUbicacion();
+    } 
+    else if (_filtroSeleccionado == 'Precio') {
+      return HotelesListPrecio();
+    } 
+    else {
+      return SizedBox(); // Otros casos a manejar
+    }
+  }
 
 }
