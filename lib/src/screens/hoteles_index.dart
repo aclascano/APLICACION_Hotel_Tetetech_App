@@ -89,7 +89,7 @@ class _HotelesScreenState extends State<HotelesScreen> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 12),
+          SizedBox(height: 1),
           DropdownButton<String>(
             value: _filtroSeleccionado,
             items: ['Todo', 'Ubicación', 'Precio']

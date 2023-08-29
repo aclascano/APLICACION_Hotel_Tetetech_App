@@ -122,7 +122,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     }
                   },
-                  child: Text('Iniciar Sesión'),
+                  child: Text('Iniciar Sesión',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Montserrat', // Cambia la fuente
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                  ),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.brown,
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
@@ -147,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 12,
+                      color: Colors.black
                     ),
                   ),
                 ),
